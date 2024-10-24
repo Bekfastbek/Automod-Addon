@@ -1,0 +1,19 @@
+# Name of the addon
+name = "Automod Addon"
+
+# Version of the addon
+version = "1.0.0"
+# Path to the main class of the addon
+# Example: "de.erdbeerbaerlp.dcintegrationautomod"
+#
+# If this parameter is missing, your addon will not load
+classPath = "de.erdbeerbaerlp.dcintegrationautomod.AutomodAddon"
+
+# Author of the Addon (optional)
+author = "bekfastbek"
+
+# Description of the Addon (optional)
+description = "yes."
+
+# Required parameter to specify if the addon is compatible with this API version
+APIVersion = 3
