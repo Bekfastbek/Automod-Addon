@@ -8,10 +8,12 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
     maven { url "https://repo.erdbeerbaerlp.de/repository/maven-public/" }
+    mavenCentral()
 }
 
 dependencies {
@@ -36,4 +38,11 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveBaseName.set('Automod-Addon')
+    archiveClassifier.set('')
+    archiveVersion.set('1.0')
+    mergeServiceFiles()
 }
