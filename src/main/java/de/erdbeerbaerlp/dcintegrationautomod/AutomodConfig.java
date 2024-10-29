@@ -21,38 +21,37 @@ public class AutomodConfig {
     }
 
     public AutomodConfig() {
-        loadConfig(); // This method remains unchanged
+        loadConfig();
     }
 
     public void loadConfig() {
         File configFile = new File("config/AutoModConfig.toml");
         
-        // Check if the config file exists
+        // Checks if the config file exists
         if (!configFile.exists()) {
             createDefaultConfig(configFile);
         }
 
-        // Load the config (this remains unchanged)
         Toml toml = new Toml().read(configFile);
         automod = toml.to(AutoModSettings.class);
     }
 
     private void createDefaultConfig(File configFile) {
-        // Create a default configuration
+        // Default Config
         Map<String, Object> defaultConfig = new HashMap<>();
         defaultConfig.put("enabled", true);
         defaultConfig.put("adminRoleAutomod", false);
         defaultConfig.put("adminRoleIDs", new String[0]);
         defaultConfig.put("bannedWords", new String[0]);
         defaultConfig.put("logChannelID", "");
-        defaultConfig.put("minecraftChannelID", ""); // Add this line for Minecraft channel ID
+        defaultConfig.put("minecraftChannelID", "");
 
         // Write the default configuration to the file
         TomlWriter writer = new TomlWriter();
         try {
-            // Create the parent directory if it doesn't exist
+            // Create directory if it doesn't exist
             configFile.getParentFile().mkdirs();
-            // Write the default configuration
+            // Writes the Default Config
             FileWriter fileWriter = new FileWriter(configFile);
             writer.write(defaultConfig, fileWriter);
             fileWriter.close();
@@ -67,6 +66,6 @@ public class AutomodConfig {
         public String[] adminRoleIDs;
         public String[] bannedWords;
         public String logChannelID;
-        public String minecraftChannelID; // Add this line for Minecraft channel ID
+        public String minecraftChannelID;
     }
 }

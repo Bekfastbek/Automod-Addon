@@ -16,6 +16,7 @@ public class AutomodAddon implements DiscordIntegrationAddon {
     private final String minecraftChannelID = AutomodConfig.instance().automod.minecraftChannelID;
     private AutomodListener listener;
 
+    // Addon Loading
     @Override
     public void load(DiscordIntegration dc) {
         listener = new AutomodListener(dc);
@@ -35,38 +36,37 @@ public class AutomodAddon implements DiscordIntegrationAddon {
         public AutomodListener(DiscordIntegration dc) {
             this.dc = dc;
         }
-
+        // Main Logic
         @Override
         public void onMessageReceived(MessageReceivedEvent event) {
             Message message = event.getMessage();
             Member member = event.getMember();
+     // From minecraft message to Discord
+     if (member == null || member.getRoles().isEmpty()) return;
+          String content = message.getContentRaw();
+          for (String blacklistedWord : AutomodConfig.instance().automod.bannedWords) {
+          if (content.toLowerCase().contains(blacklistedWord.toLowerCase())) {
+          message.delete().queue();
 
-            // Check if member is null or has no roles
-            if (member == null || member.getRoles().isEmpty()) return;
-
-            // Only process messages in the designated Minecraft channel
+            // From Discord to Minecraft chat
             if (event.getChannel().getId().equals(minecraftChannelID) && !isAdminBypass(member)) {
-                for (String blacklistedWord : AutomodConfig.instance().automod.bannedWords) {
                     if (message.getContentRaw().toLowerCase().contains(blacklistedWord.toLowerCase())) {
-                        // Log and prevent forwarding to Discord
                         if (logChannelID != null && !logChannelID.isEmpty()) {
                             dc.getJDA().getTextChannelById(logChannelID)
                                 .sendMessage("Blocked message from **" + member.getEffectiveName() + "** containing blacklisted word: **" + blacklistedWord + "**. Content: \"" + message.getContentRaw() + "\"")
                                 .queue();
                         }
-
                         DiscordIntegration.LOGGER.info("Blocked message from Minecraft to Discord due to blacklisted word: " + blacklistedWord);
-                        
-                        // Block message from Discord
-                        event.getMessage().delete().queue(); // Alternatively, if deletion isn’t desired, stop processing here
+                        event.getMessage().delete().queue();
                         return;
                     }
                 }
             }
         }
     }
+    }
 
-    // Check for admin bypass
+    // AdminRoleID check for toggle
     private boolean isAdminBypass(Member member) {
         for (String roleId : adminRoleIDs) {
             if (member.getRoles().stream().anyMatch(role -> role.getId().equals(roleId))) {
